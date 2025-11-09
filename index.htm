@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<head>
+	<title>TST</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@300&display=swap" rel="stylesheet">
+    
+    <style>
+        .NoiDung_Div
+        {
+            border-radius:5px;
+            padding:5px;
+            border:1px solid rgba(0,0,0,0.3);
+        }    
+        @media only screen and (max-width: 600px){.NoiDung_Div {width: 95%;}}
+        @media only screen and (min-width: 601px){.NoiDung_Div {max-width: 400px;}}
+    </style>
+    
+</head>
+<body>
+    <center>
+        <div class="NoiDung_Div2">
+            <table>
+                <tr>
+                    <td>
+                        <div id="UseTimeInput_Button" style="padding:5px;border-radius:5px;border:1px solid green;color:green;" onclick="ChangeUseInput();">Not Use</div>
+                        <input type="text" id="UseTimeInput" style="display:none;" value="0">
+                        <script>
+                            function ChangeUseInput()
+                            {
+                                var Use = parseInt($('#UseTimeInput').val());
+                                if (Use ==0)
+                                {
+                                    $("#UseTimeInput_Button").css("background-color", "green");
+                                    $("#UseTimeInput_Button").css("color", "white");
+                                    $("#UseTimeInput_Button").text('Use Input');
+                                    $('#UseTimeInput').val('1');
+                                }
+                                else
+                                {
+                                    $("#UseTimeInput_Button").css("background-color", "white");
+                                    $("#UseTimeInput_Button").css("color", "green");
+                                    $("#UseTimeInput_Button").text('Not Use');
+                                    $('#UseTimeInput').val('0');
+                                }
+                            }
+                        </script>
+                    </td>
+                    
+                    <td>
+                        <input type="text" id="Time" style="padding:5px;border-radius:5px;width:150px;">
+                    </td>
+                    
+                    <td>
+                        <style>
+                            .Download_Button:active
+                            {
+                                background:green;
+                                color:white;
+                            }
+                        </style>
+                        <a id="download" download="BAO HIEM.png">
+                            <button type="button" onclick="download()" class="Download_Button" style="border:green 1px solid;padding:8px;color:green;border-radius:5px;">Download</button>
+                        </a>
+                        <script>
+                            function download() 
+                            {
+                                var download = document.getElementById("download");
+                                var image = document.getElementById("Draw_Image").toDataURL("image/jpeg")
+                                    .replace("image/png", "image/octet-stream");
+                                download.setAttribute("href", image);
+                                //download.setAttribute("download","BAO HIEM XE.jpg");
+                            }
+                            
+                        </script>
+                    </td>
+                    
+                    
+                </tr>
+            </table>
+            
+            <div style="height:30px;">&nbsp;</div>
+            <input  style="width:0px;" type="file" id="Image_File" accept=".jpg,.jpeg" name="FileAnhLaiXe[]" multiple>
+            <label for="Image_File">
+                <canvas id="Draw_Image" height="300" style="background:yellow;width:100%;">
+                        
+                </canvas>
+            </label>
+            
+            <div style="height:60px;">&nbsp;</div>
+        </div>
+    </center>
+</body>
+
+<script>
+    var today = new Date();
+    var time = today.getHours();
+    var Mn = today.getMinutes();
+    if (parseInt(Mn) >9){var Mn2 = Mn;} else {var Mn2 = '0' + Mn;}
+    var Sc = today.getSeconds();
+    if (parseInt(Sc) >9){var Sc2 = Sc;} else {var Sc2 = '0' + Sc;}
+    time = time + ':' + Mn2 + ':' + Sc2;
+    var date = today.getDate() + ' thg ' + (today.getMonth()+1) + ', ' + today.getFullYear();
+    var Print = date + ' ' + time;
+    $('#Time').val(Print);            
+                
+                
+    document.getElementById('Image_File').addEventListener('change', function(e) 
+    {
+    	var canvas = document.getElementById('Draw_Image');
+    	var Ctx = canvas.getContext('2d');
+        //Ctx.clearRect(0, 0, Ctx.width, Ctx.height);
+        
+        Ctx.fillStyle = "#99ddff";
+        Ctx.fillRect(0, 0, 1900, 1400);
+        
+        
+        var Include_Image = new Image();
+        Include_Image.setAttribute('crossOrigin', 'anonymous');
+        Include_Image.onload = function()
+        {
+            var maxSize = 1000;
+            var width = Include_Image.width;
+			var height = Include_Image.height;
+			var TyLe = 1;
+			if (width < maxSize && height<maxSize)
+			{
+			    if (width > height) 
+			    {
+    				TyLe = width/maxSize;
+    			} 
+    			else 
+    			{
+    				TyLe = height/maxSize;
+    			}
+			}
+			
+			if (width > height) {
+				if (width > maxSize) {
+					height *= maxSize / width;;
+					width = maxSize;
+				}
+			} else {
+				if (height > maxSize) {
+					width *= maxSize / height;
+					height = maxSize;
+				}
+			}
+			
+			
+			
+			canvas.width = width;
+			canvas.height = height;
+            Ctx.drawImage(Include_Image, 0, 0,width,height);
+            
+            Ctx.fillStyle = "rgba(0,0,0,0.2)";
+            var Size = parseInt(30*TyLe);
+            Ctx.font = Size + "px Arial";
+            Ctx.textAlign = "right";
+            var x1 = width - 2;
+            var y1 = height - 6;
+            var Use = parseInt($('#UseTimeInput').val());
+            if (Use ==0)
+            {
+                var today = new Date();
+                var time = today.getHours();
+                var Mn = today.getMinutes();
+                if (parseInt(Mn) >9){var Mn2 = Mn;} else {var Mn2 = '0' + Mn;}
+                var Sc = today.getSeconds();
+                if (parseInt(Sc) >9){var Sc2 = Sc;} else {var Sc2 = '0' + Sc;}
+                time = time + ':' + Mn2 + ':' + Sc2;
+                var date = today.getDate() + ' thg ' + (today.getMonth()+1) + ', ' + today.getFullYear();
+                var Print = date + ' ' + time;
+            }
+            else
+            {
+                var Print = $('#Time').val();
+                //alert(Print);
+            }
+            
+            Ctx.fillText(Print, x1, y1);
+            
+            Ctx.fillStyle = "#ffffff";
+            var x2 = width - 4;
+            var y2 = height - 8;
+            Ctx.fillText(Print, x2, y2);
+            
+            
+        };
+        Include_Image.src = URL.createObjectURL(e.target.files[0]); 
+        var DL = document.getElementById("download");
+        DL.setAttribute("download",e.target.files[0].name);
+        
+    });  
+    
+</script>
